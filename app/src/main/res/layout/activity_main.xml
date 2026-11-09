@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- את הרכיבים שלכם מוסיפים כאן, בין שתי התגיות -->
+    <TextView
+        android:id="@+id/teTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="הספרייה שלי"
+        android:textSize="28sp">
+    </TextView>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etBook"
+        android:inputType="text"
+        android:maxLength="4"
+        android:hint="שם הספר">
+    </EditText>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etAuthur"
+        android:inputType="text"
+        android:maxLength="4"
+        android:hint="שם הסופר">
+    </EditText>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etPages"
+        android:inputType="number"
+        android:maxLength="4"
+        android:hint="מספר עמודים">
+    </EditText>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnSave"
+        android:text="שמירה בענן"
+        android:gravity="center"
+        android:textSize="18sp">
+    </Button>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnLoad"
+        android:text="טעינה מהענן"
+        android:gravity="center"
+        android:textSize="18sp">
+    </Button>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvStatus"
+        android:text="עוד לא נשמר כלום"
+        android:gravity="center"
+        android:textSize="18sp">
+    </Button>
+
+</LinearLayout>

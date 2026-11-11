@@ -4,15 +4,28 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
+
+
+public class MainActivity extends AppCompatActivity {
+    FirebaseFirestore db;
+    EditText etBook, etAuthor, etPages;
+    TextView tvStatus;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,11 +36,12 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-
-        EditText etPages = findViewById(R.id.etPages);
-        EditText etAuthur = findViewById(R.id.etAuthur);
-        EditText etBook = findViewById(R.id.etBook);
+;
+        tvStatus = findViewById(R.id.tvStatus);
+        db = FirebaseFirestore.getInstance();
+        etPages = findViewById(R.id.etPages);
+        etAuthor = findViewById(R.id.etAuthur);
+        etBook = findViewById(R.id.etBook);
         Button btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,10 +53,10 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                String AuthorText = etAuthur.getText().toString();
+                String AuthorText = etAuthor.getText().toString();
                 if (AuthorText.isEmpty()) {
-                    etAuthur.setError("חובה למלא את שם הסופר");
-                    etAuthur.requestFocus();
+                    etAuthor.setError("חובה למלא את שם הסופר");
+                    etAuthor.requestFocus();
                     return;
                 }
                 String pagesText = etPages.getText().toString();
@@ -51,7 +65,28 @@ public class MainActivity extends AppCompatActivity {
                     etPages.requestFocus();
                     return;
                 }
+                Map<String, Object> book = new HashMap<>();
+                book.put("title", etBook.getText().toString());
+                book.put("author", etAuthor.getText().toString());
+                int pages = Integer.parseInt(etPages.getText().toString());
+                book.put("pages", pages);
 
+                tvStatus.setText("שומר...");
+
+                db.collection("books").document("current").set(book)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                tvStatus.setText("נשמר בענן");
+                                Toast.makeText(MainActivity.this, "הספר נשמר", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                tvStatus.setText("השמירה נכשלה: " + e.getMessage());
+                            }
+                        });
 
             }
         });

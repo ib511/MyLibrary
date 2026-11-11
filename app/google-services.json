@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "282682631778",
+    "project_id": "mylibrary-itamar",
+    "storage_bucket": "mylibrary-itamar.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:282682631778:android:0fba0a3c2fd8373dbcd33b",
+        "android_client_info": {
+          "package_name": "com.example.mylibrary"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVZMOmNBgCADKHylMqGxZg-OX0nXtTKCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

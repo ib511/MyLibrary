@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore db;
     EditText etBook, etAuthor, etPages;
     TextView tvStatus;
+    String loadedTitle = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 String BookText = etBook.getText().toString();
                 if (BookText.isEmpty()) {
                     etBook.setError("חובה למלא את שם הסופר");
@@ -88,6 +91,43 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
 
+            }
+        });
+
+        Button btnLoad = findViewById(R.id.btnLoad);
+        btnLoad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvStatus.setText("טוען...");
+
+                db.collection("books").document("current").get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+
+                            @Override
+
+                            public void onSuccess(DocumentSnapshot doc) {
+                                if (!doc.exists()) {
+                                    tvStatus.setText("עוד אין ספר שמור");
+                                    return;
+                                }else
+                                etBook.setText(doc.getString("title"));
+                                etAuthor.setText(doc.getString("author"));
+                                tvStatus.setText("נטען מהענן");
+
+                                Long pages = doc.getLong("pages");
+                                if (pages != null) {
+                                    etPages.setText(String.valueOf(pages));
+                                } else {
+                                    etPages.setText("");
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                tvStatus.setText("הטעינה נכשלה: " + e.getMessage());
+                            }
+                        });
             }
         });
     }

@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-;
+        ;
         tvStatus = findViewById(R.id.tvStatus);
         db = FirebaseFirestore.getInstance();
         etPages = findViewById(R.id.etPages);
@@ -49,75 +49,14 @@ public class MainActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                    loadBook();
 
-                String BookText = etBook.getText().toString();
-                if (BookText.isEmpty()) {
-                    etBook.setError("חובה למלא את שם הסופר");
-                    etBook.requestFocus();
-                    return;
-                }
 
-                String AuthorText = etAuthor.getText().toString();
-                if (AuthorText.isEmpty()) {
-                    etAuthor.setError("חובה למלא את שם הסופר");
-                    etAuthor.requestFocus();
-                    return;
-                }
-                String pagesText = etPages.getText().toString();
-                if (pagesText.isEmpty()) {
-                    etPages.setError("חובה למלא מספר עמודים");
-                    etPages.requestFocus();
-                    return;
-                }
-
-                String ReadText = etRead.getText().toString();
-                if(ReadText.isEmpty()){
-                    etRead.setError("חובה למלא מספר עמודים שקראת");
-                    etRead.requestFocus();
-                    return;
-                }
-                int readd = Integer.parseInt(etRead.getText().toString());
-                int pages = Integer.parseInt(etPages.getText().toString());
-                if(readd > pages){
-                    etRead.setError("כתוב כמה שקראת באמת");
-                    etRead.requestFocus();
-                    return;
-                }
-                if(readd < 0){
-                    etRead.setError("כתוב כמה שקראת באמת");
-                    etRead.requestFocus();
-                    return;
-                }
-                Map<String, Object> book = new HashMap<>();
-                book.put("title", etBook.getText().toString());
-                book.put("author", etAuthor.getText().toString());
-                book.put("pages", pages);
-                book.put("read", readd);
-
-                tvStatus.setText("שומר...");
-
-                db.collection("books").document("current").set(book)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                tvStatus.setText("נשמר בענן");
-                                Toast.makeText(MainActivity.this, "הספר נשמר", Toast.LENGTH_SHORT).show();
-                                Double ppage = Double.parseDouble(etPages.getText().toString());
-                                Double rread = Double.parseDouble(etRead.getText().toString());
-                                double pr = (rread / ppage) * 100;
-                                tvStatus.setText("קראת " + readd + "עמודים מתוך " + pages +"זה באחוזים " + pr);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                tvStatus.setText("השמירה נכשלה: " + e.getMessage());
-                            }
-                        });
 
 
             }
         });
+
 
         Button btnLoad = findViewById(R.id.btnLoad);
         btnLoad.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                                     tvStatus.setText("עוד אין ספר שמור");
                                     return;
                                 }else
-                                etBook.setText(doc.getString("title"));
+                                    etBook.setText(doc.getString("title"));
                                 etAuthor.setText(doc.getString("author"));
                                 tvStatus.setText("נטען מהענן");
 
@@ -154,6 +93,74 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
             }
+
         });
+        loadBook();
+    }
+    void loadBook() {
+        String BookText = etBook.getText().toString();
+        if (BookText.isEmpty()) {
+            etBook.setError("חובה למלא את שם הסופר");
+            etBook.requestFocus();
+            return;
+        }
+
+        String AuthorText = etAuthor.getText().toString();
+        if (AuthorText.isEmpty()) {
+            etAuthor.setError("חובה למלא את שם הסופר");
+            etAuthor.requestFocus();
+            return;
+        }
+        String pagesText = etPages.getText().toString();
+        if (pagesText.isEmpty()) {
+            etPages.setError("חובה למלא מספר עמודים");
+            etPages.requestFocus();
+            return;
+        }
+
+        String ReadText = etRead.getText().toString();
+        if(ReadText.isEmpty()){
+            etRead.setError("חובה למלא מספר עמודים שקראת");
+            etRead.requestFocus();
+            return;
+        }
+        int readd = Integer.parseInt(etRead.getText().toString());
+        int pages = Integer.parseInt(etPages.getText().toString());
+        if(readd > pages){
+            etRead.setError("כתוב כמה שקראת באמת");
+            etRead.requestFocus();
+            return;
+        }
+        if(readd < 0){
+            etRead.setError("כתוב כמה שקראת באמת");
+            etRead.requestFocus();
+            return;
+        }
+        Map<String, Object> book = new HashMap<>();
+        book.put("title", etBook.getText().toString());
+        book.put("author", etAuthor.getText().toString());
+        book.put("pages", pages);
+        book.put("read", readd);
+
+        tvStatus.setText("שומר...");
+
+        db.collection("books").document("current").set(book)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        tvStatus.setText("נשמר בענן");
+                        Toast.makeText(MainActivity.this, "הספר נשמר", Toast.LENGTH_SHORT).show();
+                        Double ppage = Double.parseDouble(etPages.getText().toString());
+                        Double rread = Double.parseDouble(etRead.getText().toString());
+                        double pr = (rread / ppage) * 100;
+                        tvStatus.setText("קראת " + readd + "עמודים מתוך " + pages +"זה באחוזים " + pr);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        tvStatus.setText("השמירה נכשלה: " + e.getMessage());
+                    }
+                });
     }
 }

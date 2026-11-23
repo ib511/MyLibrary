@@ -42,6 +42,15 @@
         android:hint="מספר עמודים">
     </EditText>
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etRead"
+        android:inputType="number"
+        android:maxLength="4"
+        android:hint="עמודים שקראתי">
+    </EditText>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

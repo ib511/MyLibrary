@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseFirestore db;
-    EditText etBook, etAuthor, etPages;
+    EditText etBook, etAuthor, etPages, etRead;
     TextView tvStatus;
     String loadedTitle = "";
     @Override
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         etPages = findViewById(R.id.etPages);
         etAuthor = findViewById(R.id.etAuthur);
+        etRead = findViewById(R.id.etRead);
         etBook = findViewById(R.id.etBook);
         Button btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -68,11 +69,30 @@ public class MainActivity extends AppCompatActivity {
                     etPages.requestFocus();
                     return;
                 }
+
+                String ReadText = etRead.getText().toString();
+                if(ReadText.isEmpty()){
+                    etRead.setError("חובה למלא מספר עמודים שקראת");
+                    etRead.requestFocus();
+                    return;
+                }
+                int readd = Integer.parseInt(etRead.getText().toString());
+                int pages = Integer.parseInt(etPages.getText().toString());
+                if(readd > pages){
+                    etRead.setError("כתוב כמה שקראת באמת");
+                    etRead.requestFocus();
+                    return;
+                }
+                if(readd < 0){
+                    etRead.setError("כתוב כמה שקראת באמת");
+                    etRead.requestFocus();
+                    return;
+                }
                 Map<String, Object> book = new HashMap<>();
                 book.put("title", etBook.getText().toString());
                 book.put("author", etAuthor.getText().toString());
-                int pages = Integer.parseInt(etPages.getText().toString());
                 book.put("pages", pages);
+                book.put("read", readd);
 
                 tvStatus.setText("שומר...");
 
@@ -82,6 +102,10 @@ public class MainActivity extends AppCompatActivity {
                             public void onSuccess(Void unused) {
                                 tvStatus.setText("נשמר בענן");
                                 Toast.makeText(MainActivity.this, "הספר נשמר", Toast.LENGTH_SHORT).show();
+                                Double ppage = Double.parseDouble(etPages.getText().toString());
+                                Double rread = Double.parseDouble(etRead.getText().toString());
+                                double pr = (rread / ppage) * 100;
+                                tvStatus.setText("קראת " + readd + "עמודים מתוך " + pages +"זה באחוזים " + pr);
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -90,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                                 tvStatus.setText("השמירה נכשלה: " + e.getMessage());
                             }
                         });
+
 
             }
         });
